@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Registration Form</title>
+  <script src="jquery-3.6.0.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="static/RegistrationForm.css">
+</head>
+<body>
+<form method="post" action="{{url_for('register')}}">
+    <div class="msg">{{ msg }}</div>
+<div class="wrapper">
+    <div class="title">
+      Registration Form
+    </div>
+    <div class="form">
+       <div class="inputfield">
+          <label>First Name</label>
+          <input type="text" class="input" id="firstname" name="firstname" required>
+       </div>  
+        <div class="inputfield">
+          <label>Last Name</label>
+          <input type="text" class="input" id="lastname" name="lastname" required>
+       </div>  
+       <div class="inputfield">
+          <label>Password</label>
+          <input type="password" class="input" name="password" id="password" type="password" onkeyup='check();' required>
+       </div>  
+      <div class="inputfield">
+          <label>Confirm Password</label>
+          <input type="password" class="input" name="cpassword" id="cpassword" type="password" onkeyup='check();' required>
+          <span id='message'></span>
+       </div> 
+        <div class="inputfield" name="cartype">
+          <label>Car Type Interested</label>
+          <div class="custom_select">
+            <select name="cartype">
+              <option value="Select" name="Select"><--Select--></option>
+              <option value="HatchBack" name="HatchBack">HatchBack</option>
+              <option value="Sedan" name="Sedan">Sedan</option>
+              <option value="SUV" name="SUV">SUV</option>
+              <option value="MPV" name="MPV">MPV</option>
+            </select>
+          </div>
+       </div> 
+        <div class="inputfield">
+          <label>Email Address</label>
+          <input type="text" class="input" type="email"  id="emailid" name="emailid" required>
+       </div> 
+      <div class="inputfield">
+          <label>Phone Number</label>
+          <input type="text" class="input" id="phonenumber" name="phonenumber" required>
+       </div> 
+      
+      <div class="inputfield">
+        <input type="submit" value="Register" class="btn">
+      </div>
+    </div>
+</div>
+</form>
+	<script type="text/javascript">
+   $('#password, #cpassword').on('keyup', function () {
+  if ($('#password').val() == $('#cpassword').val()) {
+    $('#message').html('Matched').css('color', 'green');
+  } else 
+    $('#message').html('Not Matched').css('color', 'red');
+});
+
+var check = function() {
+  if (document.getElementById('password').value ==
+    document.getElementById('cpassword').value) {
+    document.getElementById('message').style.color = 'green';
+    document.getElementById('message').innerHTML = 'Matched';
+  } else {
+    document.getElementById('message').style.color = 'red';
+    document.getElementById('message').innerHTML = 'Not Matched';
+  }
+}
+var validations ={
+    email: [/^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/, 'Please enter a valid email address']
+};
+$(document).ready(function(){
+    // Check all the input fields of type email. This function will handle all the email addresses validations
+    $("input[type=Email]").change( function(){
+        // Set the regular expression to validate the email
+        validation = new RegExp(validations['email'][0]);
+        // validate the email value against the regular expression
+        if (!validation.test(this.value)){
+            // If the validation fails then we show the custom error message
+            this.setCustomValidity(validations['email'][1]);
+            return false;
+        } else {
+            // This is really important. If the validation is successful you need to reset the custom error message
+            this.setCustomValidity('');
+        }
+    });
+})
+  </script>
+</body>
+</html>

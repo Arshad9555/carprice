@@ -1,0 +1,26 @@
+
+function Load_carModels(Manufacturer,Car_Name)
+       {
+           var Manufacturer=document.getElementById(Manufacturer);
+           var Car_Name= document.getElementById(Car_Name);
+           console.log(Manufacturer.value);
+
+           Car_Name.value="";
+           Car_Name.innerHTML="";
+
+           {% for Manufacturer in Manufacturer %}
+               if( Manufacturer.value == "{{ Manufacturer }}")
+               {
+                   {% for Car_Name in Car_Name %}
+                       {% if Manufacturer in Car_Name %}
+
+                           var newOption= document.createElement("option");
+                           newOption.value="{{ Car_Name }}";
+                           newOption.innerHTML="{{ Car_Name }}";
+                           Car_Name.options.add(newOption);
+                       {% endif %}
+                   {% endfor %}
+               }
+           {% endfor %}
+       }
+

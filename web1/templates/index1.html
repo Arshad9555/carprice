@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="static/style1.css">
+	<script src="{{ url_for('static', filename='js/index1.ejs') }}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
+
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+    <title>Car Price Prediction</title>
+  </head >
+  <body class="bg-dark" style="background-image: url('/static/images/img.jpg')">
+  <a style="color:white;" href="{{ url_for('PredictPriceForm')}}" data-after="Contact">ReFresh</a>
+
+    <div class="container">
+    	<div class="row">
+    		<div class="card mt-50 style=width:100%, height=100%">
+    			<div class="card-header">
+    				<div class="col-12" style="text-align: center;">
+    					<h1>Please Enter Values In The Below Fields To Calculate The Market Value Of The Car.</h1>
+    				</div>
+    			</div>
+				<a style="color:black;" href="{{ url_for('Home')}}" data-after="Contact">Back</a>
+    			<div class="card-body">
+    				
+						<form method="post" action="/predict" name="Modelform" accept-charset="utf-8">
+
+    				<div class="col-md-10 form-group" style="text-align: left;">
+    					<label><b>Select Manufacturer</b></label>
+    					<select class="selectpicker form-control" id="Manufacturer"  name="Manufacturer" required="1"
+								onchange="Load_carModels(this.id,'Car_Name')">
+    						{% for Manufacturer in Manufacturer  %}
+    						<option value="{{Manufacturer}}">{{ Manufacturer }}</option>
+    						{% endfor %}
+    					</select>
+    				</div>
+
+    				<div class="col-md-10 form-group" style="text-align: left;">
+    					<label><b>Select the Car Model</b></label>
+    					<select class="selectpicker form-control" id="Car_Name" name="Car_Name" required="1">
+    						{% for Car_Name in Car_Name %}
+    						<option value="{{Car_Name}}">{{ Car_Name }}</option>
+    						{% endfor %}
+    					</select>
+    				</div>
+    				<div class="col-md-10 form-group" style="text-align: left;">
+    					<label><b>Year</b></label>
+    					<select class="selectpicker form-control" id="Year" name="Year" required="1">
+    						{% for Year in Year %}
+    						<option value="{{Year}}">{{ Year }}</option>
+    						{% endfor %}
+    					</select>
+    				</div>
+    				<div class="col-md-10 form-group" style="text-align: left;">
+    					<label><b>Enter the Number of Kilometers Driven</b></label>
+    					<input class="form-control" type="text" id="Kms_Driven" name="Kms_Driven" placeholder="Enter the number of Kilometers Driven">
+    				</div>
+    				<div class="col-md-10 form-group" style="text-align: left;">
+    					<label><b>Choose the Fuel Type</b></label>
+    					<select class="selectpicker form-control"  id="Fuel_Type" name="Fuel_Type" required="1">
+    						{% for Fuel_Type in Fuel_Type %}
+    						<option value="{{Fuel_Type}}">{{ Fuel_Type }}</option>
+    						{% endfor %}
+
+    					</select>
+    				</div>
+    				<div class="col-md-10 form-group" style="text-align: left;">
+    					<label><b>Choose Seller Type</b></label>
+    					<select class="selectpicker form-control"  id="Seller_Type" name="Seller_Type" required="1">
+    						{% for Seller_Type in Seller_Type %}
+    						<option value="{{Seller_Type}}">{{ Seller_Type }}</option>
+    						{% endfor %}
+    					</select>
+    				</div>
+    				<div class="col-md-10 form-group" style="text-align: left;">
+    					<label><b>Choose the Transmission Type</b></label>
+    					<select class="selectpicker form-control"  id="Transmission" name="Transmission" required="1">
+    						{% for Transmission in Transmission %}
+							<option value="{{Transmission}}">{{ Transmission }}</option>
+							{% endfor %}
+    					</select>
+    				</div>
+    				<div class="col-md-10 form-group" style="text-align: left;">
+    					<label><b>Enter the Number of Owners</b></label>
+    					<input class="form-control" type="text" id="No_Of_Owners" required="1" min="1" max="3" name="No_Of_Owners" placeholder="Enter the number of Owners">
+    				</div>
+    				<div class="col-md-10 form-group" style="text-align: left;">
+    					<label><b>Enter the On-Road price in the manufacturing year</b></label>
+    					<input class="form-control" type="text" id="Present_Price" required="1" maxlength="5400000" name="Present_Price" placeholder="Enter the On-Road Price">
+    				</div>
+    				<div class="col-md-10 form-group" style="text-align: left;">
+    					<label><b>Choose Insurance Type</b></label>
+    					<select class="selectpicker form-control"  id="Insurance" name="Insurance" required="1">
+    						{% for Insurance in Insurance %}
+							<option value="{{Insurance}}">{{ Insurance }}</option>
+							{% endfor %}
+    					</select>
+    				</div>
+    				<br>
+
+
+<button id="sub" type="submit ">Calculate the Selling Price</button>
+							<div><h3 class="prediction_text">{{ prediction_text }}</h3></div>
+				</form>
+
+    	</div>
+				</div>
+    </div>
+  </div>
+<div align="centre">
+    <form method="post" action="{{url_for('RetrieveData')}}">
+    <table id="retrievetbl">
+        <tr>
+            <td colspan="2" style="color:white;"><h3>Retrieve Car Information</h3></td>
+        </tr>
+        <tr>
+            <td style="color:white;">Manufacturer</td>
+            <td><select class="selectpicker form-control" id="Manufacturer1"  name="Manufacturer1" required="1"
+								onchange="Load_carModels(this.id,'Car_Name1')">
+    						{% for Manufacturer in Manufacturer  %}
+    						<option value="{{Manufacturer}}">{{ Manufacturer }}</option>
+    						{% endfor %}
+    					</select></td>
+        </tr>
+        <tr>
+            <td style="color:white;">Car Name</td>
+            <td><select class="selectpicker form-control" id="Car_Name1" name="Car_Name1" required="1">
+    						{% for Car_Name in Car_Name %}
+    						<option value="{{Car_Name}}">{{ Car_Name }}</option>
+    						{% endfor %}
+    					</select></td>
+        </tr>
+        <tr>
+            <td style="color:white;">Year</td>
+            <td><select class="selectpicker form-control" id="Year1" name="Year1" required="1">
+    						{% for Year in Year %}
+    						<option value="{{Year}}">{{ Year }}</option>
+    						{% endfor %}
+    					</select></td>
+        </tr>
+        <tr>
+            <td style="color:white;">Fuel Type</td>
+            <td><select class="selectpicker form-control"  id="Fuel_Type1" name="Fuel_Type1" required="1">
+    						{% for Fuel_Type in Fuel_Type %}
+    						<option value="{{Fuel_Type}}">{{ Fuel_Type }}</option>
+    						{% endfor %}
+
+    					</select></td>
+        </tr>
+        <tr>
+            <td style="color:white;">Transmission</td>
+            <td><select class="selectpicker form-control"  id="Transmission1" name="Transmission1" required="1">
+    						{% for Transmission in Transmission %}
+							<option value="{{Transmission}}">{{ Transmission }}</option>
+							{% endfor %}
+    					</select></td>
+        </tr>
+        <tr>
+            <td colspan="2" align="center"><input type="submit" value="GetInfo" name=""></td>
+        </tr>
+    </table>
+		<h3 class="msg" style="color:white;">{{ msg }}</h3>
+    </form>
+
+</div>
+  <script>
+	  function Load_carModels(Manufacturer,Car_Name)
+       {
+           var Manufacturer=document.getElementById(Manufacturer);
+           var Car_Name= document.getElementById(Car_Name);
+           console.log(Manufacturer.value);
+
+           Car_Name.value="";
+           Car_Name.innerHTML="";
+
+           {% for Manufacturer in Manufacturer %}
+               if( Manufacturer.value == "{{ Manufacturer }}")
+               {
+                   {% for Car_Name in Car_Name %}
+                       {% if Manufacturer in Car_Name %}
+
+                           var newOption= document.createElement("option");
+                           newOption.value="{{ Car_Name }}";
+                           newOption.innerHTML="{{ Car_Name }}";
+                           Car_Name.options.add(newOption);
+                       {% endif %}
+                   {% endfor %}
+               }
+           {% endfor %}
+       }
+
+       function send_data()
+    {
+        document.querySelector('form').addEventListener("submit",form_handler);
+
+        var fd=new FormData(document.querySelector('form'));
+
+        var xhr= new XMLHttpRequest({mozSystem: true});
+
+        xhr.open('POST','/predict',true);
+        document.getElementById('prediction').innerHTML="Wait! Predicting Price.....";
+        xhr.onreadystatechange = function(){
+            if(xhr.readyState == XMLHttpRequest.DONE){
+      document.getElementById('prediction').innerHTML="Prediction: ₹"+xhr.responseText;
+					alert("The Market value of the car Is"+xhr.responseText);
+
+            }
+        };
+
+        xhr.onload= function(){};
+
+        xhr.send(fd);
+    }
+  </script>
+<script>
+    predict() {
+        window.location = '/predict';
+
+    }
+</script>
+  <script>
+$(document).ready(function(){
+  $("button").click(function(){
+    $.ajax({url: "/predict", success: function(result){
+      $("#div1").html(result);
+    }});
+  });
+});
+</script>
+  </body>
+
+</html>
